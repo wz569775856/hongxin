@@ -1,0 +1,137 @@
+{
+  "needed_database": [
+    "mongodb",
+    "redis"
+  ],
+  "mongodb_maindb":"maindb",
+  "apppath":"/",
+  "app_name":"宏信公益",
+  "company_name":"创客联盟",
+  "logo":"宏信公益",
+  "img_logo":"http://127.0.0.1:8080/img/backstage/hongxin_logo.jpeg",
+  "cookie_secret": "hongxin.frontend",
+  "session_prefix":"hongxin.user.session.",
+  "subapp": {
+    "payment": {
+      "path": "/payment",
+      "api_key": "app_Ha1aXLHuD0CK84Cm"
+    },
+    "sms": {
+      "path":"/sms",
+      "token":"c1c3fbd820bb0e29599836b466934ea1",
+      "msg_template":"谢谢您使用我们的app，您此次操作的验证码为：{%verification_code%}，该验证码的有效时间为10分钟。【宏信公益】",
+      "code_expires":600000,
+      "max_authcode_everyday":5
+    },
+    "wxmobile":{
+      "path":"/wechat/mobile",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "wxweb":{
+      "path":"/wechat/web",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "wxsubscription":{
+      "path":"/wechat/subscription",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "qqmobile":{
+      "path":"/qq/mobile",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "qqweb":{
+      "path":"/qq/web",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "weibomoile":{
+      "path":"/weibo/mobile",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "weiboweb":{
+      "path":"/weibo/web",
+      "app_id":"",
+      "app_secret":"",
+      "token_refresh_advance":300000
+    },
+    "jpush":{
+      "path":"/jpush",
+      "app_id":"c7cefed6686c47eb5c93711d",
+      "app_secret":"bbfc7ae5520e09b45f3f937c"
+    }
+  },
+  "im":{
+  },
+  "email":{
+    "smtp":{
+      "pool":true,
+      "port":25,
+      "host":"smtp.mxhichina.com",
+      "auth":{
+        "user":"info@sunrisin.com",
+        "pass":"Sunrisin1987"
+      },
+      "authMethod":"PLAIN",
+      "localAddress":"0.0.0.0",
+      "secure":false,
+      "ignoreTLS":false,
+      "requireTLS":false,
+      "tls":{},
+      "logger":false,
+      "debug":false,
+      "connectionTimeout":300000,
+      "greetingTimeout":18000,
+      "socketTimeout":36000,
+      "maxConnections":10,
+      "maxMessages":500,
+      "rateLimit":10000
+    },
+    "mail_templates_path":"view/static/other/mailtemplates",
+    "code_expires":600000
+  },
+  "identifyingcode_purpose":{
+    "0":"注册",
+    "1":"修改密码",
+    "2":"忘记密码"
+  },
+  "errcode":{
+    "-1":"unknown error",
+    "1000":"error in creating to mongodb",
+    "1001":"error in researching from mongodb",
+    "1002":"error in updating to mongodb",
+    "1003":"error in deleting to mongodb",
+    "1004":"error in query from redis",
+    "1005":"error in setting key in redis",
+    "1006":"error in deleting key in redis",
+    "1007":"error in sms",
+    "1008":"error in sending email",
+    "1009":"existed user",
+    "1010":"user not exists",
+    "1011":"invalid password",
+    "1012":"invalid identifying code",
+    "1013":"identifying code expires",
+    "1014":"too frequecy in fetching identifying code",
+    "1015":"not login",
+    "1016":"failed to save file",
+    "1017":"failed to delete file",
+    "1018":"failed to do multi in redis",
+    "1019":"role name exists",
+    "10000":"please fill your name first",
+    "10001":"frontal photo not existed",
+    "10002":"negative photo not existed",
+    "10003":"already passed authentication",
+    "10004":"no reason for authentication failure",
+    "10005":"nickname exiests"
+  }
+}

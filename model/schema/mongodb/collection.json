@@ -1,0 +1,29 @@
+{
+   "maindb":{
+       "user":[
+         {"dt_registration":1}
+       ],
+      "resume":[
+      ],
+       "admin":[
+       ],
+       "identifyingcode":[
+       ],
+     "donation":[
+       {"type":1},
+       {"dt_publish":1},
+       {"dt_publish":-1},
+       {"dt_end":1},
+       {"dt_end:":-1},
+       {"state":1},
+       {"dt_sync":-1},
+       {"subject":1},
+       {"badge._id":1}
+     ],
+     "badge":[
+       {"binding.collection":1},
+       {"_id":1,"binding.collection":1},
+       {"type":1}
+     ]
+   }
+}
