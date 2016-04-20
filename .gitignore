@@ -2,7 +2,9 @@
 *.~
 .*
 !.gitignore
-log/
-node_modules/
+log/**
+!log/
+node_modules/**
+!node_modules/
 view/static/
 
