@@ -97,7 +97,7 @@
       "maxMessages":500,
       "rateLimit":10000
     },
-    "mail_templates_path":"view/static/other/mailtemplates",
+    "mail_templates_path":"view/static/other/mailtemplate",
     "code_expires":600000
   },
   "identifyingcode_purpose":{
