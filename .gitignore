@@ -1,10 +1,9 @@
 *~
 *.~
 .*
+**.*
 !.gitignore
-log/**
-!log/
-node_modules/**
-!node_modules/
-view/static/
-
+log/
+node_modules/
+view/static/backstage/home/
+view/static/frontend/home/

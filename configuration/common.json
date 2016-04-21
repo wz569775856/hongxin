@@ -6,7 +6,7 @@
   "mongodb_maindb":"maindb",
   "apppath":"/",
   "app_name":"宏信公益",
-  "company_name":"创客联盟",
+  "company_name":"上海晟海网络科技有限公司",
   "logo":"宏信公益",
   "img_logo":"http://127.0.0.1:8080/img/backstage/hongxin_logo.jpeg",
   "cookie_secret": "hongxin.frontend",
