@@ -7,7 +7,9 @@ var argv = require('minimist')(process.argv.slice(2))
 var uuid=require("uuid")
 var qs = require('qs')
 require('qs-numbers')(qs)
-
+var mkdirp=require("mkdirp")
+mkdirp.sync(path.join(__dirname,"view/static/backstage/home/"))
+mkdirp.sync(path.join(__dirname,"view/static/frontend/home/"))
 global.$cwd=__dirname
 process.chdir($cwd)
 
