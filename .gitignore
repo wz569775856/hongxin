@@ -6,3 +6,4 @@ log/
 node_modules/
 view/static/backstage/home/
 view/static/frontend/home/
+script/npm-debug.log
