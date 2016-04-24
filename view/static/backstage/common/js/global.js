@@ -4,12 +4,6 @@ $(function($) {
   		globalLeftNavLi = $(this).parent('li');
 		if(globalLeftNavLi.hasClass('open')){
 			globalLeftNavLi.removeClass('open');
-=======
-	var globalLeftNavIcon = $('#globalLeftNavIcon'),globalLeftNav = $('#globalLeftNav'),main = $('.main');
-  	globalLeftNav.delegate('li','click',function(){
-		if($(this).hasClass('open')){
-			$(this).removeClass('open');
->>>>>>> .r175
 		}else{
 			globalLeftNavLi.addClass('open');
 		}
