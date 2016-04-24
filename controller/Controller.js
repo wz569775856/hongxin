@@ -65,7 +65,18 @@ function _produceMapForAction_Name(req){
 
 
 Controller.prototype.show=function(res,filename,objOption){
-    var path1=path.join(this.viewPrefix,filename)
+    var strViewPrefix=""
+    if(!$isBackstage){
+        if(res.req.isPC){
+            strViewPrefix="pc"
+        }else if(res.req.isApp){
+            strViewPrefix="app"
+        }else{
+            strViewPrefix="m"
+        }
+    }
+    strViewPrefix=path.join(strViewPrefix,this.viewPrefix)
+    var path1=path.join(strViewPrefix,filename)
     var objContext=res.locals
     if(objOption){
         objContext= _.extend(res.locals,objOption)
@@ -74,7 +85,18 @@ Controller.prototype.show=function(res,filename,objOption){
 }
 
 Controller.prototype.showerr=function(res,filename,errcode){
-    var path1=path.join(this.viewPrefix,filename)
+    var strViewPrefix=""
+    if(!$isBackstage){
+        if(res.req.isPC){
+            strViewPrefix="pc"
+        }else if(res.req.isApp){
+            strViewPrefix="app"
+        }else{
+            strViewPrefix="m"
+        }
+    }
+    strViewPrefix=path.join(strViewPrefix,this.viewPrefix)
+    var path1=path.join(strViewPrefix,filename)
     var objContext=res.locals
     objContext= _.extend(objContext,{errmsg:$objConfig["errcode"][errcode.toString()]})
     res.render(path1,objContext)

@@ -86,6 +86,7 @@ async.series(
             req.isBrowser = true
             req.deviceAgent = 0
             req.isPC=true
+            req.isApp=false
             if (req.get("x-ua")) {
                 req.isBrowser = false
                 req.deviceAgent = parseInt(req.get("x-ua"))
@@ -96,6 +97,9 @@ async.series(
                 var objRegExp=/(iphone|ipad|ipod|android)/
                 if(strUserAgent.match(objRegExp)){
                     req.isPC=false
+                    if(req.query.mobile_engine==1){
+                        req.isApp=true
+                    }
                 }
             }
 
@@ -136,8 +140,6 @@ async.series(
             }
             next()
         })
-
-        //$app.use(express.static(__dirname+"/view/static"))
 
         var responseTime = require('response-time')
         $app.use(responseTime())

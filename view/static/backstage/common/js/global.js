@@ -1,5 +1,4 @@
 $(function($) {
-<<<<<<< .mine
 	var globalLeftNavIcon = $('#globalLeftNavIcon'),globalLeftNav = $('#globalLeftNav'),main = $('.main'),globalLeftNavLi;
   	globalLeftNav.delegate('.sNav','click',function(){
   		globalLeftNavLi = $(this).parent('li');

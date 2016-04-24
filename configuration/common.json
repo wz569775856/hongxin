@@ -132,6 +132,6 @@
     "10002":"negative photo not existed",
     "10003":"already passed authentication",
     "10004":"no reason for authentication failure",
-    "10005":"nickname exiests"
+    "10005":"nickname exists"
   }
 }

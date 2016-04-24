@@ -5,13 +5,24 @@ var argv = require('minimist')(process.argv.slice(2))
 var create=require("./create.js")
 var boolIsBackstage=false
 var boolAll=false
+var intState=create.envState(argv)
 
-if(argv["all"]){
-    boolAll=true
-}
-
-if(argv["backstage"]){
-    boolIsBackstage=true
+switch (intState){
+    case 0:
+        boolAll=true
+        boolIsBackstage=false
+        break
+    case 1:
+        boolAll=false
+        boolIsBackstage=true
+        break
+    case 2:
+        boolAll=false
+        boolIsBackstage=false
+        break
+    default:
+        boolAll=true
+        boolIsBackstage=false
 }
 
 for(var i in argv["_"]){

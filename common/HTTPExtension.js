@@ -18,4 +18,3 @@ http.ServerResponse.prototype.jsonerr=function(objErrorJson){
     delete objErrorJson["errcode"]
     this.json(objErrorJson)
 }
-

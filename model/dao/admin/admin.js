@@ -41,7 +41,7 @@ $dao["admin"]["registration"]=function(req,cbFunc){
                 })
             }else{
                 errcode=1009
-                cb(null,null)
+                cb({errcode:1009},null)
             }
         },
         function(objResult,cb){

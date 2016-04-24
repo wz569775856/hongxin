@@ -85,7 +85,21 @@ var obj%sColl=$objMongoColls["maindb"]["%s"]\
     fs.writeFileSync(strDaoPath,strDaoMain)
 }
 
-function createView(strViewName,boolFrontEnd,boolAll){
+function createFrontView(strViewName,strPlatform){
+    var arrViewDirs=[]
+    if(!strPlatform || strPlatform=="all"){
+        arrViewDirs.push(path.join(strFrontendViewDir,"app",strViewName),path.join(strFrontendViewDir,"m",strViewName),path.join(strFrontendViewDir,"pc",strViewName))
+    }else{
+        arrViewDirs.push(path.join(strFrontendViewDir,strPlatform,strViewName))
+    }
+
+    for(var i in arrViewDirs){
+        mkdirp.sync(arrViewDirs[i])
+        fs.writeFileSync(path.join(arrViewDirs[i],"index.html"),"")
+    }
+}
+
+function createView(strViewName,boolFrontEnd,boolAll,strPlatform){
     var strDirBk=path.join(strBackstageViewDir,strViewName)
     var strDirFe=path.join(strFrontendViewDir,strViewName)
     var strFileBackStage=path.join(strDirBk,"index.html")
@@ -97,10 +111,10 @@ function createView(strViewName,boolFrontEnd,boolAll){
     if(boolAll){
         mkdirp.sync(strDirBk)
         fs.writeFileSync(strFileBackStage,strContent)
-        mkdirp.sync(strDirFe)
+        createFrontView(strViewName,strPlatform)
     }else{
         if(boolFrontEnd){
-            mkdirp(strDirFe)
+            createFrontView(strViewName,strPlatform)
         }else{
             mkdirp.sync(strDirBk)
             fs.writeFileSync(strFileBackStage,strContent)
@@ -108,6 +122,28 @@ function createView(strViewName,boolFrontEnd,boolAll){
     }
 }
 
+function returnArrStageFromOption(argv){
+    var intState=0
+    if(argv["backstage"]){
+        intState=1
+    }else if(argv["frontend"]){
+        intState=2
+    }else if(argv["all"]){
+        intState=0
+    }
+    return intState
+}
+
+function returnHtmlPlatform(argv){
+    if(!argv["platform"]){
+        return "all"
+    }else{
+        return argv["platform"]
+    }
+}
+
 module.exports.controller=createController
 module.exports.dao=createDao
 module.exports.view=createView
+module.exports.envState=returnArrStageFromOption
+module.exports.platform=returnHtmlPlatform
