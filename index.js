@@ -134,7 +134,7 @@ async.series(
                     res.locals.logo = $objConfig["logo"]
                 }
                 if ($objConfig["img_logo"]) {
-                    res.locals["img_logo"] = $objConfig["img_logo"]
+                    res.locals["img_logo"] = path.join($objConfig["staticUrl"],"multimedia/img",util.format("logo.",$objConfig["img_logo"]))
                 }
                 res.locals["staticUrl"] = $objConfig["static_server_url"]
             }

@@ -5,12 +5,11 @@
   ],
   "mongodb_maindb":"maindb",
   "apppath":"/",
-  "app_name":"宏信公益",
+  "app_name":"加加网",
   "company_name":"上海晟海网络科技有限公司",
-  "logo":"宏信公益",
-  "img_logo":"http://127.0.0.1:8080/img/backstage/hongxin_logo.jpeg",
-  "cookie_secret": "hongxin.frontend",
-  "session_prefix":"hongxin.user.session.",
+  "logo":"加加网",
+  "cookie_secret": "jiajia.frontend",
+  "session_prefix":"jiajia.user.session.",
   "subapp": {
     "payment": {
       "path": "/payment",
@@ -19,7 +18,7 @@
     "sms": {
       "path":"/sms",
       "token":"c1c3fbd820bb0e29599836b466934ea1",
-      "msg_template":"谢谢您使用我们的app，您此次操作的验证码为：{%verification_code%}，该验证码的有效时间为10分钟。【宏信公益】",
+      "msg_template":"谢谢您使用我们的app，您此次操作的验证码为：{%verification_code%}，该验证码的有效时间为10分钟。【加加网】",
       "code_expires":600000,
       "max_authcode_everyday":5
     },
@@ -69,9 +68,10 @@
       "path":"/jpush",
       "app_id":"c7cefed6686c47eb5c93711d",
       "app_secret":"bbfc7ae5520e09b45f3f937c"
+    },
+    "im":{
+      "path":"/im"
     }
-  },
-  "im":{
   },
   "email":{
     "smtp":{
@@ -97,7 +97,7 @@
       "maxMessages":500,
       "rateLimit":10000
     },
-    "mail_templates_path":"view/static/other/mailtemplate",
+    "mail_templates_path":"view/static/backstage/other/mailtemplate",
     "code_expires":600000
   },
   "identifyingcode_purpose":{

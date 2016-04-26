@@ -12,14 +12,13 @@ $load("MyUtil.js")
 var objDonationColl=$objMongoColls["maindb"]["donation"]
 var objBadgeColl=$objMongoColls["maindb"]["badge"]
 
-$dao["donation"]["insert"]=function(objDonation,funcCallback){
+$dao["donation"]["insert"]=function(req,funcCallback){
+
     if(objDonation["logo"] && objDonation["logo"][0]){
         objDonation["logo"]=objDonation["logo"][0]
     }
     objDonation["dt_publish"]=new Date()
-    objDonation["dt_Sync"]=new Date()
-    objDonation["total_money"]=0
-    objDonation["donation_user_count"]=0
+    objDonation["dt_sync"]=new Date()
     $dao["cmn"]["insertOne"]("maindb","donation",objDonation,function(errcode,objID){
         funcCallback(errcode,objID)
     })

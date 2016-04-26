@@ -30,6 +30,7 @@ var usersColl=$objMongoColls[$objConfig["mongodb_maindb"]]["user"]
 
 
 function getIdentifyingCode(req,res,next){
+    req.query.id=req.query.id.toString()
     async.series([
         function(cb){
             if(req.query.id.indexOf("@")==-1){
@@ -173,20 +174,25 @@ function login(req,res,next){
     var userid=req.body.id
     var password=req.body.password
 
-    usersColl.findOne({_id:userid},function(err,objUser){
-        if(password!=objUser["password"]){
-            res.err(1010)
-        }else{
-            objUser["dt_lastLogin"]=objUser["dt_lastLogin"].getTime()
-            objUser["dt_registration"]=objUser["dt_registration"].getTime()
-            $dao["cmn"]["insertUserSession"](req,userid,objUser,function(errcode,sessionid){
-                if(errcode!=0){
-                    res.err(errcode)
-                }else{
-                    objUser["sessionid"]=sessionid
-                    res.json(objUser)
-                }
-            })
+    usersColl.findOneAndUpdate({_id:userid},{$currentDate:{dt_lastLogin:true}},{returnOriginal:false},function(err,objUser){
+        if(err){
+            res.err(1001)
+        }else {
+            objUser = objUser["value"]
+            if (password != objUser["password"]) {
+                res.err(1010)
+            } else {
+                objUser["dt_lastLogin"] = objUser["dt_lastLogin"].getTime()
+                objUser["dt_registration"] = objUser["dt_registration"].getTime()
+                $dao["cmn"]["insertUserSession"](req, userid, objUser, function (errcode, sessionid) {
+                    if (errcode != 0) {
+                        res.err(errcode)
+                    } else {
+                        objUser["sessionid"] = sessionid
+                        res.json(objUser)
+                    }
+                })
+            }
         }
     })
 }

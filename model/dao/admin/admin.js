@@ -34,9 +34,7 @@ $dao["admin"]["registration"]=function(req,cbFunc){
                         var objNow=new Date()
                         objAdmin["dt_registration"]=objNow.getTime()
                         objAdmin["dt_lastLogin"]=objNow.getTime()
-                        req.session.user=objAdmin
-                        req.user=objAdmin
-                        cb(null,null)
+                        cb(null,objAdmin)
                     }
                 })
             }else{
@@ -45,31 +43,19 @@ $dao["admin"]["registration"]=function(req,cbFunc){
             }
         },
         function(objResult,cb){
-            var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],req.user._id)
-            $redisClient.get(strSessionKey,function(err,strSessionID){
+            $dao["cmn"]["insertAdminSession"](req,objResult,function(err,objAdmin){
                 if(err){
-                    cb({errcode:1004},null)
+                    cb({errcode:err},null)
                 }else{
-                    var objMulti=$redisClient.multi()
-                    if(strSessionID){
-                        objMulti.del(strSessionID)
-                    }
-                    objMulti.set(strSessionKey,req.sessionID)
-                    objMulti.exec(function(err,replies){
-                        if(err){
-                            cb({errcode:1018},null)
-                        }else{
-                            cb(null,null)
-                        }
-                    })
+                    cb(null,objAdmin)
                 }
             })
         }
     ],function(err,result){
         if(err){
-            cbFunc(err["errcode"])
+            cbFunc(err["errcode"],null)
         }else{
-            cbFunc(0)
+            cbFunc(0,result)
         }
     })
 }
@@ -78,7 +64,7 @@ $dao["admin"]["login"]=function(req,cbFunc){
     var id=req.body._id
     var password=req.body.password
     var errcode=0
-    objAdminColl.findOne({_id:id},function(err,obj){
+    objAdminColl.findOneAndUpdate({_id:id},{$currentDate:{dt_lastLogin:true}},{returnOriginal:false},function(err,obj){
         if(err){
             errocde=1001
             cbFunc(errcode)
@@ -87,6 +73,7 @@ $dao["admin"]["login"]=function(req,cbFunc){
                 errcode=1010
                 cbFunc(errcode)
             }else{
+                obj=obj["value"]
                 if(password!=obj["password"]){
                     errcode=1011
                     cbFunc(errcode)
@@ -104,7 +91,8 @@ $dao["admin"]["login"]=function(req,cbFunc){
                         }else{
                             var objMulti=$redisClient.multi()
                             if(strSessionID){
-                                objMulti.del(strSessionID)
+                                var str1=util.format("%s%s",$objConfig["session_prefix"],strSessionID)
+                                objMulti.del(str1)
                             }
                             objMulti.set(strSessionKey,req.sessionID)
                             objMulti.exec(function(err,replies){
@@ -136,15 +124,8 @@ $dao["admin"]["resetPassword"]=function(req,cbFunc){
                 errcode=1002
                 cbFunc(errcode)
             }else{
-                var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],id)
-                $redisClient.del(strSessionKey,function(err,reply){
-                    if(err){
-                        cbFunc(1006)
-                    }else{
-                        req.session.destroy()
-                        req.session=null
-                        cbFunc(0)
-                    }
+                $dao["cmn"]["deleteAdminSessionByID"](id,function(err){
+                    cbFunc(err)
                 })
             }
         })
@@ -161,38 +142,16 @@ $dao["admin"]["resetPassword1"]=function(req,cbFunc){
             errcode=1002
             cbFunc(errcode)
         }else{
-            var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],id)
-            $redisClient.get(strSessionKey,function(err,reply){
-                if(reply){
-                    var objMulti=$redisClient.multi()
-                    objMulti.del(reply)
-                    objMulti.del(strSessionKey)
-                    objMulti.exec(function(err,replies){
-                        if(err){
-                            cbFunc(1018)
-                        }else{
-                            cbFunc(0)
-                        }
-                    })
-                }else{
-                    cbFunc(0)
-                }
+            $dao["cmn"]["deleteAdminSessionByID"](id,function(err){
+                cbFunc(err)
             })
         }
     })
 }
 
 $dao["admin"]["logout"]=function(req,cbFunc){
-    var userid=req.session.user._id
-    var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],userid)
-    $redisClient.del(strSessionKey,function(err,reply){
-        if(err){
-            cbFunc(1006)
-        }else{
-            req.session.destroy()
-            req.session=null
-            cbFunc(0)
-        }
+    $dao["cmn"]["deleteAdminSessionBySID"](req,function(err){
+        cbFunc(err)
     })
 }
 
@@ -201,30 +160,9 @@ $dao["admin"]["deregistration"]=function(req,cbFunc){
     objAdminColl.updateOne({_id:id},{$set:{off:true}},function(err,result){
         if(err){
             cbFunc(1002)
-        }else{
-            var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],id)
-            $redisClient.del(strSessionKey,function(err,reply){
-                if(err){
-                    cbFunc(1006)
-                }else{
-                    var strSessionKey=util.format("%s%s",$objConfig["session_prefix"],id)
-                    $redisClient.get(strSessionKey,function(err,reply){
-                        if(reply){
-                            var objMulti=$redisClient.multi()
-                            objMulti.del(reply)
-                            objMulti.del(strSessionKey)
-                            objMulti.exec(function(err,replies){
-                                if(err){
-                                    cbFunc(1018)
-                                }else{
-                                    cbFunc(0)
-                                }
-                            })
-                        }else{
-                            cbFunc(0)
-                        }
-                    })
-                }
+        }else {
+            $dao["cmn"]["deleteAdminSessionByID"](id,function(err){
+                cbFunc(err)
             })
         }
     })

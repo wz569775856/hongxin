@@ -1,6 +1,6 @@
 {
-  "cookie_secret": "hongxin.backstage",
-  "session_prefix":"hongxin.admin.session.",
+  "cookie_secret": "jiajia.backstage",
+  "session_prefix":"jiajia.admin.session.",
   "lefttree":[
     {
       "title":"用户管理",

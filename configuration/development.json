@@ -1,10 +1,9 @@
 {
   "mongodb_url":"mongodb://127.0.0.1:27017/maindb",
-  "static_server_url":"http://127.0.0.1:8080",
   "redis_ip":"127.0.0.1",
   "redis_port":6379,
+  "static_server_url":"http://127.0.0.1:8080",
   "listen_app_port":8088,
   "server_ip":"127.0.0.1",
-  "verification_code_expire":604800000,
-  "img_logo":"http://127.0.0.1:8080/img/backstage/hongxin_logo.jpeg"
+  "verification_code_expire":604800000
 }

@@ -154,3 +154,79 @@ $dao["cmn"]["queryUserProfileByID"]=function(strUserID,funcCb){
         }
     })
 }
+
+$dao["cmn"]["insertAdminSession"]=function(req,objAdmin,funcCb){
+    req.session.user=objAdmin
+    req.user=objAdmin
+    var strSessionKey=util.format("%s%s",strSessionPrefix,objAdmin["_id"])
+    $redisClient.set(strSessionKey,req.sessionID,function(err,reply){
+        if(err){
+            funcCb(1004,null)
+        }else{
+            funcCb(0,objAdmin)
+        }
+    })
+}
+
+$dao["cmn"]["deleteAdminSessionBySID"]= function (req,funcCb) {
+    var strSessionKey=util.format("%s%s",strSessionPrefix,req.user._id)
+    $redisClient.del(strSessionKey,function(err,reply){
+        if(err){
+            funcCb(1003)
+        }else{
+            req.session.destroy()
+            funcCb(0)
+        }
+    })
+}
+
+$dao["cmn"]["deleteAdminSessionByID"]=function(strID,funcCb){
+    async.waterfall([
+        function(cb){
+            var sessionKey2=util.format("%s%s",strSessionPrefix,strID)
+            $redisClient.get(sessionKey2,function(err,reply){
+                if(err){
+                    cb({errcode:1004},null)
+                }else{
+                    cb(null,util.format("%s%s",strSessionPrefix,reply),sessionKey2)
+                }
+            })
+        },
+        function(sessionKey1,sessionKey2,cb){
+            $redisClient.get(sessionKey2,function(err,reply){
+                if(err){
+                    cb({errcode:1004},null)
+                }else{
+                    var obj=JSON.parse(reply)
+                    for(var strKey in obj){
+                        if(strKey!="cookie"){
+                            delete obj[strKey]
+                        }
+                    }
+                    $redisClient.set(sessionKey2,JSON.stringify(obj),function(err,reply){
+                        if(err){
+                            cb({errcode:1005},null)
+                        }else{
+                            cb(null,sessionKey1)
+                        }
+                    })
+                }
+            })
+        },
+        function(sessionKey1,cb){
+            $redisClient.del(sessionKey1,function(err,reply){
+                if(err){
+                    cb({errcode:1003},null)
+                }else{
+                    cb(null,null)
+                }
+            })
+        }
+    ],function(err,objResult){
+        if(err){
+            funcCb(err["errcode"])
+        }else{
+            funcCb(0)
+        }
+    })
+}

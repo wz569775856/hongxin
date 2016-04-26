@@ -12,7 +12,7 @@ var arrRoutes=[
     ["get","login",showLoginPage],
     ["delete","logout","$auth",logout],
     ["get","password","$auth",passwordPage],
-    ["put","password","$auth",updatePassword],
+    ["put","password","$auth",updatePassword]
 ]
 
 function SSOController(arrRoutes,strRouterPrefix,strViewPrefix,strSubApp){
