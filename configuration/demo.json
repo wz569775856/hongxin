@@ -3,7 +3,7 @@
   "redis_ip":"redis.sunrisin.com",
   "redis_port":6379,
   "static_server_url":"http://static.sunrisin.com:8080",
-  "listen_app_port":80,
+  "listen_app_port":8088,
   "server_ip":"www.sunrisin.com",
   "verification_code_expire":600000
 }
