@@ -42,6 +42,15 @@ async.series(
         var express = require("express")
         global.$app = express()
         $app.enable("trust proxy")
+
+        if($intAppMode==1){
+            if($isBackstage){
+                $app.use(express.static("view/static/backstage"))
+            }else{
+                $app.use(express.static("view/static/frontend"))
+            }
+        }
+
         $app.set('view engine', 'html')
         if($isBackstage){
             $app.set('views', __dirname + '/view/html/backstage')
