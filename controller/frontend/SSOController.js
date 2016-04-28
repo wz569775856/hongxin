@@ -43,10 +43,10 @@ function getIdentifyingCode(req,res,next){
                 if(err){
                     cb(err)
                 }else{
-                    if(!objResult || !objResult["codes"] || !objResult["codes"][req.query.purpose]){
+                    if(!objResult || !objResult["codes"] || !objResult["codes"][req.query.purpose.toString()]){
                         cb(null,null)
                     }else{
-                        var arrCodes=objResult["codes"][req.query.purpose]
+                        var arrCodes=objResult["codes"][req.query.purpose.toString()]
                         var intTodayCount=0
                         for(var i in arrCodes){
                             var oneCode=arrCodes[i]
