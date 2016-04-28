@@ -117,13 +117,17 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
         if(req.session.web_identifying_code==identifyingcode) {
             next()
         }else{
-            res.status(1000).send("")
+            res.err(1000)
         }
     }else{
         identifyingcodeColl.findOne(objFilter,objField,function(err,objResult){
             if(err){
                 res.json(err)
             }else{
+                if(!objResult){
+                    res.err(1019)
+                    return
+                }
                 var arrObjCodes=objResult["codes"][purpose.toString()]
                 var isFound=false
                 for(var i in arrObjCodes){
@@ -138,20 +142,22 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                             isFound=true
                             break
                         }else{
-                            res.status(1001).send("")
+                            res.err(1001)
                             return
                         }
                     }
                 }
                 if(!isFound){
-                    res.status(1002).send("")
+                    res.err(1002)
+                    return
                 }else{
                     var strFilter=util.format("codes.%s",req.body.purpose)
                     var objFilter={"$set":{}}
                     objFilter["$set"][strFilter]=[]
                     identifyingcodeColl.updateOne({_id:req.body.id},objFilter,function(err,objResult){
                         if(err){
-                            res.status(1003).send("")
+                            res.err(1003)
+                            return
                         }else{
                             next()
                         }

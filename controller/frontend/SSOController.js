@@ -146,13 +146,13 @@ function userRegistration(req,res,next){
 
     usersColl.count({_id:userid},function(err,intCount){
         if(err){
-            res.status(1003).send("")
+            res.err(1003)
         }else if(intCount!=0){
-            res.status(1004).send("")
+            res.err(1004)
         }else{
             usersColl.insertOne(objInsert,function(err,objResult){
                 if(err){
-                    res.status(1005).send("")
+                    res.err(1005)
                 }else{
                     objInsert["dt_lastLogin"]=objInsert["dt_lastLogin"].getTime()
                     objInsert["dt_registration"]=objInsert["dt_registration"].getTime()
@@ -203,10 +203,10 @@ function _isOldPasswordValid(req,res,next){
 
     usersColl.findOne({_id:userid},{_id:0,password:1},function(err,objUser){
         if(err){
-            res.status(1001).send("")
+            res.err(1001)
         }else{
             if(objUser["password"]!=oldPassword){
-                res.status(1002).send("")
+                res.err(1002)
             }else{
                 next()
             }
