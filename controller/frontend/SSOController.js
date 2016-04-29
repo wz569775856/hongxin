@@ -110,6 +110,7 @@ function getIdentifyingCode(req,res,next){
         }
     ],function(err,results){
         if(err){
+        	console.log(err["errcode"])
             res.err(err["errcode"])
         }else{
             res.send("")
