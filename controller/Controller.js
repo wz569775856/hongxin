@@ -122,7 +122,8 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
     }else{
         identifyingcodeColl.findOne(objFilter,objField,function(err,objResult){
             if(err){
-                res.json(err)
+                res.err(1001)
+                return
             }else{
                 if(!objResult){
                     res.err(1019)

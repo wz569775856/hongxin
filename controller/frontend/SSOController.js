@@ -41,7 +41,7 @@ function getIdentifyingCode(req,res,next){
             req.query.arrDtTodayCodes=[]
             identifyingcodeColl.findOne({_id:req.query.id},function(err,objResult){
                 if(err){
-                    cb(err)
+                    cb({errcode:1001},null)
                 }else{
                     if(!objResult || !objResult["codes"] || !objResult["codes"][req.query.purpose.toString()]){
                         cb(null,null)
@@ -57,7 +57,7 @@ function getIdentifyingCode(req,res,next){
                             }
                         }
                         if(intTodayCount>=$objConfig["subapp"]["sms"]["max_authcode_everyday"]){
-                            cb({code:10000},null)
+                            cb({errcode:10000},null)
                         }else{
                             cb(null,null)
                         }
@@ -78,14 +78,14 @@ function getIdentifyingCode(req,res,next){
                     if(obj["error"]==0){
                        cb(null,null)
                     }else{
-                        var objResult={code:obj["error"]}
+                        var objResult={errcode:obj["error"]}
                         cb(objResult,null)
                     }
                 })
             }else if(parseInt(req.query.logintype)==1){
                 $cmn["mailer"]["sendIdentifyingCode"](req.query.id,strCode,$objConfig["identifyingcode_purpose"][req.query.purpose.toString()],function(err,result){
                     if(err){
-                        cb(err,null)
+                        cb({errcode:1008},null)
                     }else{
                         cb(null,null)
                     }
@@ -95,13 +95,14 @@ function getIdentifyingCode(req,res,next){
             }
         },
         function(cb){
-            var now=new Date()
+            var objNewIdCode={code:req.query.identifyingcode,datetime:new Date()}
+            req.query.arrDtTodayCodes.push(objNewIdCode)
             var strUpdateKey=util.format("codes.%s",req.query.purpose)
-            var objUpdate={"$push":{}}
-            objUpdate["$push"][strUpdateKey]={code:req.query.identifyingcode,datetime:now}
+            var objUpdate={"$set":{}}
+            objUpdate["$set"][strUpdateKey]=req.query.arrDtTodayCodes
             identifyingcodeColl.updateOne({_id:req.query.id},objUpdate,{upsert:true},function(err,objResult){
                 if(err){
-                    cb(err,null)
+                    cb({errcode:1002},null)
                 }else{
                     cb(null,null)
                 }
@@ -109,19 +110,9 @@ function getIdentifyingCode(req,res,next){
         }
     ],function(err,results){
         if(err){
-            res.json(err)
+            res.err(err["errcode"])
         }else{
             res.send("")
-            if(req.query.arrDtTodayCodes.length>0){
-                var strUpdateKey=util.format("codes.%s",req.query.purpose)
-                var objUpdate={"$set":{}}
-                objUpdate["$set"][strUpdateKey]=req.query.arrDtTodayCodes
-                identifyingcodeColl.updateOne({_id:req.query.id},objUpdate,{upsert:true},function(err,objResult){
-                    if(err){
-                        console.log(err)
-                    }
-                })
-            }
         }
     })
 }
