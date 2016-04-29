@@ -138,9 +138,7 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                     var objDtNow=new Date()
                     var intNowTs=objDtNow.getTime()
                     var intDiff=intNowTs-ts
-                    console.log("time diff %d",intDiff)
                     if(strCode==identifyingcode){
-                        console.log("equal")
                         if(intDiff<=$objConfig["subapp"]["sms"]["code_expires"]){
                             isFound=true
                             break
