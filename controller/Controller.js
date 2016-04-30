@@ -122,7 +122,8 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
     }else{
         identifyingcodeColl.findOne(objFilter,objField,function(err,objResult){
             if(err){
-                res.json(err)
+                res.err(1001)
+                return
             }else{
                 if(!objResult){
                     res.err(1019)
@@ -137,9 +138,7 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                     var objDtNow=new Date()
                     var intNowTs=objDtNow.getTime()
                     var intDiff=intNowTs-ts
-                    console.log("time diff %d",intDiff)
                     if(strCode==identifyingcode){
-                        console.log("equal")
                         if(intDiff<=$objConfig["subapp"]["sms"]["code_expires"]){
                             isFound=true
                             break
