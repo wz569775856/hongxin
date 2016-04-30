@@ -29,8 +29,8 @@ var identifyingcodeColl=$objMongoColls[$objConfig["mongodb_maindb"]]["identifyin
 var usersColl=$objMongoColls[$objConfig["mongodb_maindb"]]["user"]
 
 function _identifyingcodeValidate(req,res,next){
-    if(!req.query || !req.query.purpose){
-        res.err("该接口必须提供purpose查询选项.")
+    if(!req.query || req.query.purpose===undefined || req.query.purpose===null || typeof(req.query.purpose)!="number"){
+        res.err("该接口必须提供有效的purpose查询选项.")
     }else{
         next()
     }
