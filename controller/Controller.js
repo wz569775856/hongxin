@@ -126,7 +126,7 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                 return
             }else{
                 if(!objResult){
-                    res.err(1019)
+                    res.err(1010)
                     return
                 }
                 var arrObjCodes=objResult["codes"][purpose.toString()]
@@ -149,7 +149,7 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                     }
                 }
                 if(!isFound){
-                    res.err(1002)
+                    res.err(1012)
                     return
                 }else{
                     var strFilter=util.format("codes.%s",req.body.purpose)
@@ -166,6 +166,14 @@ Controller.prototype.$isIdentifyingCodeValid=function(req,res,next){
                 }
             }
         })
+    }
+}
+
+Controller.prototype.$mobileValidate=function(req,res,next){
+    if(!req.get("x-ua")){
+        res.err("该接口必须提供http头x-ua.")
+    }else{
+        next()
     }
 }
 

@@ -10,13 +10,13 @@ $load("Mailer.js")
 var uuid=require("uuid")
 
 var arrRoutes=[
-    ["get","mobile/identifyingcode",getIdentifyingCode],
-    ["post","mobile/registration","$isIdentifyingCodeValid",userRegistration],
-    ["post","mobile/login",login],
-    ["put","mobile/password1","$isIdentifyingCodeValid",_isOldPasswordValid,resetPassword],
-    ["put","mobile/password2","$isIdentifyingCodeValid",resetPassword],
+    ["get","mobile/identifyingcode","$mobileValidate",getIdentifyingCode],
+    ["post","mobile/registration","$mobileValidate","$isIdentifyingCodeValid",userRegistration],
+    ["post","mobile/login","$mobileValidate",login],
+    ["put","mobile/password1","$mobileValidate","$isIdentifyingCodeValid",_isOldPasswordValid,resetPassword],
+    ["put","mobile/password2","$mobileValidate","$isIdentifyingCodeValid",resetPassword],
     ["get","web/identifyingcode",getWebIdentifyingCode],
-    ["delete","logout",logout]
+    ["delete","logout","$mobileValidate",logout]
 ]
 
 function SSOController(arrRoute,strRoutePrefix,strViewPrefix,strSubAppName){
@@ -112,7 +112,7 @@ function getIdentifyingCode(req,res,next){
         if(err){
             res.err(err["errcode"])
         }else{
-            res.send("")
+            res.send(req.query.identifyingcode)
         }
     })
 }

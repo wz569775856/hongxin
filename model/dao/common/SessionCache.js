@@ -13,30 +13,39 @@ $dao["cmn"]["insertUserSession"]=function(req,strID,objUserInfo,funcCb){
     var objMulti=$redisClient.multi()
     var strSessionID=""
 
-    if(!req.isBrowser){
-        var strUUID=uuid.v1()
-        strSessionID=util.format("%s%s",$objConfig["session_prefix"],strUUID)
-        req.sessionID=strSessionID
-        objMulti.hset(strSessionID,"cid",strID)
-    }else{
-        strSessionID=util.format("%s%s",$objConfig["session_prefix"],req.session.id)
-        req.session.cid=strID
-    }
-
     var strIdAgent=util.format("%s%s.agents",$objConfig["session_prefix"],strID)
-    objMulti.hset(strIdAgent,req.deviceAgent.toString(),strSessionID)
+    $redisClient.hget(strIdAgent,req.deviceAgent.toString(),function(err,reply){
+        if(err){
+            funcCb(1004,null)
+        }else{
+            if(reply){
+                objMulti.del(reply)
+            }
+            if(!req.isBrowser){
+                var strUUID=uuid.v1()
+                strSessionID=util.format("%s%s",$objConfig["session_prefix"],strUUID)
+                req.sessionID=strSessionID
+                objMulti.hset(strSessionID,"cid",strID)
+            }else{
+                strSessionID=util.format("%s%s",$objConfig["session_prefix"],req.session.id)
+                req.session.cid=strID
+            }
 
-    $redisClient.get(util.format("%s%s.userprofile",strSessionPrefix,strID),function(err,reply){
-        if(!reply || reply==""){
-            objMulti.set(util.format("%s%s.userprofile",$objConfig["session_prefix"],strID),JSON.stringify(objUserInfo))
+            objMulti.hset(strIdAgent,req.deviceAgent.toString(),strSessionID)
+
+            $redisClient.get(util.format("%s%s.userprofile",strSessionPrefix,strID),function(err,reply){
+                if(!reply || reply==""){
+                    objMulti.set(util.format("%s%s.userprofile",$objConfig["session_prefix"],strID),JSON.stringify(objUserInfo))
+                }
+                objMulti.exec(function(err,replies){
+                    if(err){
+                        funcCb(1005,null)
+                    }else{
+                        funcCb(0,strSessionID)
+                    }
+                })
+            })
         }
-         objMulti.exec(function(err,replies){
-             if(err){
-                 funcCb(1005,null)
-             }else{
-                 funcCb(0,strSessionID)
-             }
-         })
     })
 }
 
