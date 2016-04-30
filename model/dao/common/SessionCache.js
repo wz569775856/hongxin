@@ -19,7 +19,7 @@ $dao["cmn"]["insertUserSession"]=function(req,strID,objUserInfo,funcCb){
         req.sessionID=strSessionID
         objMulti.hset(strSessionID,"cid",strID)
     }else{
-        strSessionID=req.sessionID
+        strSessionID=util.format("%s%s",$objConfig["session_prefix"],req.session.id)
         req.session.cid=strID
     }
 

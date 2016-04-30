@@ -141,6 +141,16 @@ function userRegistration(req,res,next){
 
     var userid=req.body.id
     var strPassword=req.body.password
+
+    if(!userid){
+        res.err("用户id必须给出.")
+        return
+    }
+    if(!strPassword){
+        res.err("用户密码必须给出.")
+        return
+    }
+
     var dtNow=new Date()
     var objInsert={_id:userid,password:strPassword,dt_lastLogin:dtNow,dt_registration:dtNow,logintype:req.body.logintype}
 
@@ -174,22 +184,37 @@ function login(req,res,next){
     var userid=req.body.id
     var password=req.body.password
 
-    usersColl.findOneAndUpdate({_id:userid},{$currentDate:{dt_lastLogin:true}},{returnOriginal:false},function(err,objUser){
-        if(err){
-            res.err(1001)
-        }else {
-            objUser = objUser["value"]
-            if (password != objUser["password"]) {
-                res.err(1010)
-            } else {
-                objUser["dt_lastLogin"] = objUser["dt_lastLogin"].getTime()
-                objUser["dt_registration"] = objUser["dt_registration"].getTime()
-                $dao["cmn"]["insertUserSession"](req, userid, objUser, function (errcode, sessionid) {
-                    if (errcode != 0) {
-                        res.err(errcode)
-                    } else {
-                        objUser["sessionid"] = sessionid
-                        res.json(objUser)
+    if(!userid){
+        res.err("用户id必须给出.")
+        return
+    }
+    if(!password){
+        res.err("用户密码必须给出.")
+        return
+    }
+
+    usersColl.findOne({_id:userid},function(err,objUser){
+        if(!objUser){
+            res.err(1010)
+        }else{
+            if(password!=objUser["password"]){
+                res.err(1011)
+            }else{
+                var objDate=new Date()
+                objUser["dt_lastLogin"]=objDate.getTime()
+                objUser["dt_registration"]=objUser["dt_registration"].getTime()
+                usersColl.updateOne({_id:userid},{$currentDate:{dt_lastLogin:true}},function(err,objResult){
+                    if(err){
+                        res.err(1002)
+                    }else{
+                        $dao["cmn"]["insertUserSession"](req,userid,objUser,function(errcode,strSessionID){
+                            if(errcode!=0){
+                                res.err(errcode)
+                            }else{
+                                objUser["sessionid"]=strSessionID
+                                res.json(objUser)
+                            }
+                        })
                     }
                 })
             }
