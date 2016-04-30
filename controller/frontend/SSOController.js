@@ -16,7 +16,7 @@ var arrRoutes=[
     ["put","mobile/password1","$mobileValidate","$isIdentifyingCodeValid",_isOldPasswordValid,resetPassword],
     ["put","mobile/password2","$mobileValidate","$isIdentifyingCodeValid",resetPassword],
     ["get","web/identifyingcode",getWebIdentifyingCode],
-    ["delete","logout","$mobileValidate",logout]
+    ["delete","logout","$mobileValidate",_logoutValidate,logout]
 ]
 
 function SSOController(arrRoute,strRoutePrefix,strViewPrefix,strSubAppName){
