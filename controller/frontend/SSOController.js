@@ -10,13 +10,13 @@ $load("Mailer.js")
 var uuid=require("uuid")
 
 var arrRoutes=[
-    ["get","mobile/identifyingcode",getIdentifyingCode],
-    ["post","mobile/registration","$isIdentifyingCodeValid",userRegistration],
-    ["post","mobile/login",login],
-    ["put","mobile/password1","$isIdentifyingCodeValid",_isOldPasswordValid,resetPassword],
-    ["put","mobile/password2","$isIdentifyingCodeValid",resetPassword],
+    ["get","mobile/identifyingcode",_identifyingcodeValidate,"$mobileValidate",getIdentifyingCode],
+    ["post","mobile/registration","$mobileValidate","$isIdentifyingCodeValid",userRegistration],
+    ["post","mobile/login","$mobileValidate",login],
+    ["put","mobile/password1","$mobileValidate","$isIdentifyingCodeValid",_isOldPasswordValid,resetPassword],
+    ["put","mobile/password2","$mobileValidate","$isIdentifyingCodeValid",resetPassword],
     ["get","web/identifyingcode",getWebIdentifyingCode],
-    ["delete","logout",logout]
+    ["delete","logout","$mobileValidate",logout]
 ]
 
 function SSOController(arrRoute,strRoutePrefix,strViewPrefix,strSubAppName){
@@ -28,6 +28,13 @@ util.inherits(SSOController,Controller)
 var identifyingcodeColl=$objMongoColls[$objConfig["mongodb_maindb"]]["identifyingcode"]
 var usersColl=$objMongoColls[$objConfig["mongodb_maindb"]]["user"]
 
+function _identifyingcodeValidate(req,res,next){
+    if(!req.query || !req.query.purpose){
+        res.err("该接口必须提供purpose查询选项.")
+    }else{
+        next()
+    }
+}
 
 function getIdentifyingCode(req,res,next){
     req.query.id=req.query.id.toString()
@@ -112,7 +119,7 @@ function getIdentifyingCode(req,res,next){
         if(err){
             res.err(err["errcode"])
         }else{
-            res.send("")
+            res.send(req.query.identifyingcode)
         }
     })
 }
@@ -248,6 +255,14 @@ function resetPassword(req,res,next){
     })
 }
 
+function _logoutValidate(req,res,next){
+    var sid=req.get("x-sid")
+    if(!sid){
+        res.err("该接口必须提供http header:x-sid")
+    }else{
+        next()
+    }
+}
 function logout(req,res,next){
     if(!req.isBrowser){
         req.sessionID=req.get("x-sid")
