@@ -11,11 +11,11 @@ http.ServerResponse.prototype.err=function(error){
     if(typeof(error)=="string"){
         obj={errmsg:error}
     }else if(typeof(error)=="number"){
-        obj={errmsg:$objConfig["errcode"][error.toString()]}
+        obj={errcode:error,errmsg:$objConfig["errcode"][error.toString()]}
     }else if(_.isObject(error)){
         obj=error
     }else{
-        obj={errmsg:"未知的错误"}
+        obj={errcode:-1,errmsg:"未知的错误"}
     }
     this.json(obj)
 }
