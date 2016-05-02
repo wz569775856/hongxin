@@ -119,7 +119,7 @@ function getIdentifyingCode(req,res,next){
         if(err){
             res.err(err["errcode"])
         }else{
-            res.send(req.query.identifyingcode)
+            res.json({identifyingcode:req.query.identifyingcode})
         }
     })
 }
