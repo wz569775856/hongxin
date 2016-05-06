@@ -63,12 +63,22 @@ $cmn["myutil"]["isBeforeToday"]=function(dt){
     return ((intDtTs-intToday)<0)
 }
 
+$cmn["myutil"]["isDecInt"]=function(str){
+    var objRegExp=/(^0$)|(^[1-9][0-9]*$)/
+    return objRegExp.test(str)
+}
+
+$cmn["myutil"]["isDecDouble"]=function(str){
+    var objRegExp=/(^0\.[0-9]+$)|(^[1-9]+\.[0-9]+$)/
+    return objRegExp.test(str)
+}
+
 $cmn["myutil"]["parseJsonFromReq"]=function(obj){
     if(!_.isObject(obj) && !_.isArray(obj) && !_.isRegExp(obj)){
         return obj
     }else if(_.isObject(obj)){
         for(var strKey in obj){
-            if(strKey=="_id"){
+            if(strKey=="_id" || strKey.indexOf("_id_")==0){
                 obj[strKey]=new ObjectID(obj[strKey])
             }else if(strKey.indexOf("dt_")==0){
                 var datetime=new Date()
@@ -106,6 +116,41 @@ $cmn["myutil"]["parseJsonToRes"]=function(obj){
         var arr=[]
         for(var i in obj){
             arr[i]=$cmn["myutil"]["parseJsonToRes"](obj[i])
+        }
+        return arr
+    }
+}
+
+$cmn["myutil"]["parseJsonFromForm"]=function(obj){
+    if(!_.isObject(obj) && !_.isArray(obj) && !_.isRegExp(obj)){
+        if($cmn["myutil"].isDecInt(obj)){
+            return parseInt(obj)
+        }else if($cmn["myutil"].isDecDouble(obj)){
+            return Number(obj)
+        }else if(obj=="true") {
+            return true
+        }else if(obj=="false") {
+            return false
+        }else {
+            return obj
+        }
+    }else if(_.isObject(obj)){
+        for(var strKey in obj){
+            if(strKey=="_id" || strKey.indexOf("_id_")==0){
+                obj[strKey]=new ObjectID(obj[strKey])
+            }else if(strKey.indexOf("dt_")==0){
+                var datetime=new Date()
+                datetime.setTime(parseInt(obj[strKey]))
+                obj[strKey]=datetime
+            }else{
+                obj[strKey]=$cmn["myutil"]["parseJsonFromForm"](obj[strKey])
+            }
+        }
+        return obj
+    }else{
+        var arr=[]
+        for(var i in obj){
+            arr[i]=$cmn["myutil"]["parseJsonFromForm"](obj[i])
         }
         return arr
     }

@@ -5,6 +5,8 @@ var util=require("util")
 var _=require("underscore")
 var path=require("path")
 var url=require("url")
+$load("FileManager.js")
+$load("MyUtil.js")
 
 function Controller(arrRoutes,routePrefix,viewPrefix,subapp){
     this.routePrefix=routePrefix || ""
@@ -315,6 +317,26 @@ Controller.prototype.$filter=function(req,res,next){
         }else{
             req.filter[strMainField]=value
         }
+    }
+    next()
+}
+
+Controller.prototype.$form=function(req,res,next){
+    $cmn["file"].saveUploadFile(req,function(errcode,objForm){
+        if(errcode!=0){
+            res.err(errcode)
+        }else{
+            objForm=$cmn["myutil"]["parseJsonFromForm"](objForm)
+            req.form=objForm
+            next()
+        }
+    })
+}
+
+Controller.prototype.$body=function(req,res,next){
+    var objHttpReqBody=req.body
+    if(objHttpReqBody){
+        objHttpReqBody=$cmn["myutil"]["parseJsonFromReq"](objHttpReqBody)
     }
     next()
 }

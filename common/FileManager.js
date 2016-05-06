@@ -68,7 +68,11 @@ function _urlJoin(){
 }
 
 function FileManager(_strRootPath){
-    this.strRootPath=_strRootPath
+    if($isBackstage){
+        this.strRootPath=path.join(_strRootPath,"backstage")
+    }else{
+        this.strRootPath=path.join(_strRootPath,"frontend")
+    }
 }
 
 //callback(objResult)
@@ -124,11 +128,15 @@ FileManager.prototype.saveUploadFile=function(req,funcAfterSaved){
             strFileUrl=path.join(strFileUrl,"home", req.cid, strDateNow, path.basename(file.path))
         }
 
-        if(!objResult[name]){
-            objResult[name]=[]
+        var arrTmpFieldNames=name.split("_")
+        if(arrTmpFieldNames[1]=="multi"){
+            if(!objResult[name]){
+                objResult[name]=[]
+            }
+            objResult[name].push(strFileUrl)
+        }else{
+            objResult[name]=strFileUrl
         }
-
-        objResult[name].push(strFileUrl)
     })
 
    form.on("error",function(err){

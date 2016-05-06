@@ -12,131 +12,119 @@ $load("MyUtil.js")
 var objDonationColl=$objMongoColls["maindb"]["donation"]
 var objBadgeColl=$objMongoColls["maindb"]["badge"]
 
+
 $dao["donation"]["insert"]=function(req,funcCallback){
-
-    if(objDonation["logo"] && objDonation["logo"][0]){
-        objDonation["logo"]=objDonation["logo"][0]
-    }
-    objDonation["dt_publish"]=new Date()
-    objDonation["dt_sync"]=new Date()
-    $dao["cmn"]["insertOne"]("maindb","donation",objDonation,function(errcode,objID){
-        funcCallback(errcode,objID)
-    })
-}
-
-$dao["donation"]["queryDeletedFiles"]=function(donationID,funcCallback){
-    objDonationColl.findOne({_id:new ObjectID(donationID)},{fields:{_id:0,fields:{logo:1,posters:1}}},function(err,doc){
-        if(err){
-            funcCallback(1001,null)
+    $cmn["file"].saveUploadFile(req,function(errcode,objDonation){
+        if(errcode!=0){
+            funcCallback(errcode,null)
         }else{
-            var arrDeleted=[]
-            arrDeleted.push(doc["logo"])
-            for(var i in doc["posters"]){
-                arrDeleted.push(doc["posters"][i])
+            objDonation["img_logo"]=objDonation["img_logo"] && objDonation["img_logo"][0]
+            objDonation["type"]=parseInt(objDonation["type"])
+            objDonation["dt_end"]=parseInt(objDonation["dt_end"])
+            objDonation["target_amount"]=Number(objDonation["target_amount"])
+            var dtNow=new Date()
+            var intNow=dtNow.getTime()
+            if(objDonation["dt_end"]<=intNow){
+                funcCallback(11000,null)
+            }else{
+                if(objDonation["type"]==0){
+                    objDonation["state"]=3
+                }else{
+                    objDonation["state"]=0
+                }
+                objDonation["dt_publish"]=new Date()
+                objDonation["dt_sync"]=new Date()
+                objDonationColl.insertOne(objDonation,function(err,objResult){
+                    if(err){
+                        funcCallback(1000,null)
+                    }else{
+                        funcCallback(0,{_id:objResult["insertedId"].toHexString()})
+                    }
+                })
             }
-            funcCallback(0,arrDeleted)
         }
     })
 }
 
-$dao["donation"]["update"]=function(id,objUpdated,funcCallback){
-    $dao["cmn"]["updateByID"](id,objUpdated,true,function(errcode){
-        funcCallback(errcode)
-    })
-}
-
-$dao["donation"]["editBadge"]=function(donationID,objBadgeInfo,funcCallback){
-    if(objBadgeInfo["_id"]){
-        objBadgeInfo["_id"]=new ObjectID(objBadgeInfo["_id"])
-    }else{
-        objBadgeInfo["_id"]=new ObjectID()
-    }
-    var badgeID=objBadgeInfo["_id"]
-    objBadgeInfo["logo"]= objBadgeInfo && objBadgeInfo["logo"] && objBadgeInfo["logo"][0]
-    objBadgeInfo["dt_edit"]=new Date()
-    delete objBadgeInfo["_id"]
-    var objBadgeInfoUpdated={$set:{binding:{collection:"donation",id:donationID}},type:"募捐徽章"}
-    async.series([
+$dao["donation"]["update"]=function(req,objDonationID,funcCb){
+    async.waterfall([
         function(cb){
-            $objMongoColls["maindb"]["badge"].updateOne({_id:badgeID},objBadgeInfoUpdated,{upsert:true},function(err,objResult){
-                if(err){
-                    cb({errcode:1002},null)
+            $cmn["file"].saveUploadFile(req,function(errcode,objDonation){
+                if(errcode!=0){
+                    cb({errcode:errcode},null)
                 }else{
-                    cb(null,null)
+                    objDonation["img_logo"]=objDonation["img_logo"] && objDonation["img_logo"][0]
+                    objDonation["type"]=parseInt(objDonation["type"])
+                    objDonation["dt_end"]=parseInt(objDonation["dt_end"])
+                    objDonation["target_amount"]=Number(objDonation["target_amount"])
+                    var dtNow=new Date()
+                    var intNow=dtNow.getTime()
+                    objDonation["dt_sync"]=new Date()
+                    cb(null,objDonation)
                 }
             })
         },
-        function(cb){
-            objBadgeInfo["_id"]=badgeID
-            $objMongoColls["maindb"]["donation"].updateOne({_id:donationID},{$set:{badge:objBadgeInfo}},function(err,objResult){
+        function(objNew,cb){
+            var objResult={expired:false}
+            objDonationColl.findOne({_id:objDonationID},function(err,objOrigin){
                 if(err){
-                    cb({errcode:1002},null)
+                    cb({errcode:1001},null)
                 }else{
-                    cb(null,null)
-                }
-            })
-        }
-    ],function(err,objResult){
-        if(err){
-            funcCallback(err["errcode"])
-        }else{
-            funcCallback(0)
-        }
-    })
-}
-
-$dao["donation"]["deleteBadge"]=function(donationID,badgeID,funcCb){
-    var objDonationID=new ObjectID(donationID)
-    var objBadgeID=new ObjectID(badgeID)
-    async.series([
-        function(cb){
-            $objMongoColls["maindb"]["badge"].deleteOne({_id:objBadgeID},function(err,objResult){
-                if(err){
-                    cb({errcode:1003},null)
-                }else{
-                    cb(null,null)
+                    var dtNow=new Date()
+                    var intNow=dtNow.getTime()
+                    if(objOrigin["state"]==4 || objOrigin["dt_end"].getTime()<intNow){
+                        objResult["expired"]=true
+                    }
+                    objResult["deletedFiles"]=[objOrigin["img_logo"]]
+                    for(var i in objOrigin["img_posters"]){
+                        objResult["deletedFiles"].push(objOrigin["img_posters"][i])
+                    }
+                    cb(null,objNew,objOrigin,objResult)
                 }
             })
         },
-        function(cb){
-            $objMongoColls["maindb"]["donation"].updateOne({_id:objDonationID},{$unset:"badge"},function(err,objResult){
-                if(err){
-                    cb({errcode:1002},null)
-                }else{
-                    cb(null,null)
-                }
-            })
+        function(objNew,objOrigin,objResult,cb){
+            var objTmp=objNew
+            if(objResult["expired"]){
+                objTmp={state:4}
+            }else{
+                objNew["state"]=objOrigin["state"]
+                $cmn["file"].delete(objResult["deletedFiles"],function(err,obj1){
+                    if(err!=0){
+                        cb({errcode:err},null)
+                    }else{
+                        cb(null,objTmp)
+                    }
+                })
+            }
         }
     ],function(err,objResult){
         if(err){
             funcCb(err["errcode"])
         }else{
-            funcCb(0)
+            objDonationColl.updateOne({_id:objDonationID},{$set:objResult},function(err,objUpdated){
+                if(err){
+                    funcCb(1002)
+                }else{
+                    funcCb(0)
+                }
+            })
         }
     })
 }
 
-$dao["donation"]["queryBadgeDetail"]=function(donationID,funcCb){
-   objDonationColl.findOne({_id:new ObjectID(donationID)},{fields:{badge:1}},function(err,obj){
-       if(err){
-           funcCb(1001,null)
-       }else{
-           obj["_id"]=obj["_id"].toHexString()
-           obj["badge"]["_id"]=obj["badge"]["_id"].toHexString()
-           obj["dt_publish"]=obj["dt_publish"].getTime()
-           obj["dt_Sync"]=obj["dt_Sync"].getTime()
-           obj["badge"]["dt_edit"]=obj["badge"]["dt_edit"].getTime()
-           funcCb(0,obj)
-       }
-   })
-
+$dao["donation"]["detail"]=function(objDonationID,funcCb){
+    objDonationColl.findOne({_id:objDonationID},function(err,objSearched){
+        if(err){
+            funcCb(1001,null)
+        }else{
+            funcCb(null,$cmn["myutil"]["parseJsonToRes"](objSearched))
+        }
+    })
 }
 
-$dao["donation"]["userDonate"]=function(donationID,userID,numMoney,funcCb){
-
-}
-
-$dao["donation"]["checkDonate"]=function(donationID,adminID,objCheckResult,funcCb){
+$dao["donation"]["donate"]=function(objDonationID,objUserID,dbMoney,intPayType,funcCb){
+    var objInserted={_id_donation:objDonationID,_id_user:objUserID,money:Number(dbMoney),type:parseInt(intPayType),dt_donation:new Date()}
 
 }
 
