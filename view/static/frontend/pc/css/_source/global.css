@@ -210,21 +210,29 @@ input::-ms-clear { display: none; }
 .offerList li.voteLi .pic { height: 120px; }
 .offerList li:hover { border-color: #ffcc01; }
 
-.popWinMask { position: fixed; top: 0; left: 0; overflow: hidden; height: 100%; width: 100%; z-index: 600; _position: absolute; _top: expression(eval(document.documentElement.scrollTop)); background: rgba(0, 0, 0, 0.5); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000,endColorstr=#7F000000); }
+.popWinMask { position: fixed; top: 0; left: 0; overflow: hidden; height: 100%; width: 100%; z-index: 600; _position: absolute; _top: expression(eval(document.documentElement.scrollTop)); background: rgba(0, 0, 0, 0.5); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000,endColorstr=#7F000000); display: none; }
 
 :root .popWinMask { filter: none; }
 
-.popWin { position: absolute; top: 50%; left: 50%; background: #fff; border: 1px solid #d4d4d4; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; }
+.popWin { position: absolute; top: 50%; left: 50%; background: #fff; border: 1px solid #d4d4d4; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; display: none; }
+.popWin .th { height: 42px; line-height: 42px; overflow: hidden; font-size: 18px; padding: 0 10px; }
+.popWin .th .sTit { float: left; font-weight: 700; }
+.popWin .th .aClose { float: right; }
+.popWin .th .aClose .iconfont { font-size: 18px; color: #666; }
+.popWin .tb .pPopWinBtn { line-height: 42px; height: 42px; padding: 20px 0 0 0; }
+.popWin .tb .pPopWinBtn .globalBtn { float: right; padding: 0 30px; }
 
 .popWin_sendArea { width: 460px; margin-left: -230px; padding: 15px; top: 20%; }
-.popWin_sendArea .th { height: 42px; line-height: 42px; overflow: hidden; font-size: 18px; }
-.popWin_sendArea .th .sTit { float: left; font-weight: 700; }
 .popWin_sendArea .th .pTab { float: left; padding: 0 0 0 10px; }
 .popWin_sendArea .th .pTab a { float: left; line-height: 40px; border: 1px solid #f2f2f2; background: #f9f9f9; color: #333; width: 98px; text-align: center; margin-left: -1px; }
 .popWin_sendArea .th .pTab a:hover { color: #333; }
 .popWin_sendArea .th .pTab a.cur { background: #fff; }
 .popWin_sendArea .global_checkBox { padding: 10px 0 0 0; }
 .popWin_sendArea .global_checkBox li { float: left; width: 49%; }
+
+.baiduMap { width: 828px; margin-top: -224px; margin-left: -414px; }
+.baiduMap .baiduMapPic { width: 828px; height: 406px; }
+.baiduMap .baiduMapPic img { width: 100%; height: 100%; display: block; }
 
 .mt5 { margin-top: 5px; }
 

@@ -10,6 +10,7 @@
 	_top: expression(eval(document.documentElement.scrollTop));
 	background:rgba(0,0,0,0.5); 
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000,endColorstr=#7F000000);
+	display: none;
 }
 :root .popWinMask { 
 	filter:none;
@@ -22,6 +23,36 @@
 	background:#fff;
 	border:1px solid #d4d4d4;
 	@include setCssAttr("border-radius","3px");
+	display: none;
+	.th{
+		height: 42px;
+		line-height: 42px;
+		overflow: hidden;
+		font-size: 18px;
+		padding:0 10px;
+		.sTit{
+			float: left;
+			font-weight: 700;
+		}
+		.aClose{
+			float: right;
+			.iconfont{
+				font-size: 18px;
+				color: #666;
+			}
+		}
+	}
+	.tb{
+		.pPopWinBtn{
+			line-height: 42px;
+			height: 42px;
+			padding: 20px 0 0 0;
+			.globalBtn{
+				float: right;
+				padding: 0 30px;
+			}
+		}
+	}
 }
 
 .popWin_sendArea{
@@ -30,14 +61,6 @@
 	padding: 15px;
 	top: 20%;
 	.th{
-		height: 42px;
-		line-height: 42px;
-		overflow: hidden;
-		font-size: 18px;
-		.sTit{
-			float: left;
-			font-weight: 700;
-		}
 		.pTab{
 			float: left;
 			padding: 0 0 0 10px;
@@ -64,6 +87,21 @@
 		li{
 			float: left;
 			width: 49%;
+		}
+	}
+}
+
+.baiduMap{
+	width: 828px;
+	margin-top:-224px;
+	margin-left: -414px;
+	.baiduMapPic{
+		width: 828px;
+		height: 406px;
+		img{
+			width: 100%;
+			height: 100%;
+			display: block;
 		}
 	}
 }

@@ -60,3 +60,11 @@
 .editSuccess { padding: 90px 0; }
 .editSuccess .sTit { display: block; line-height: 30px; width: 610px; text-align: center; padding: 80px 0; background: #fff; margin: 0 auto; }
 .editSuccess .sTit em { color: #cc3742; }
+
+.publicInterestDetail { border: 1px solid #d5d5d5; }
+.publicInterestDetail .pTit { border-bottom: 1px solid #d5d5d5; line-height: 36px; padding: 32px 0; text-align: center; font-size: 22px; }
+.publicInterestDetail .txt { padding: 30px 20px 30px 70px; border-bottom: 1px solid #d5d5d5; }
+.publicInterestDetail .txt li { float: left; width: 49%; line-height: 42px; height: 42px; overflow: hidden; }
+.publicInterestDetail .txt li .mapBtn { float: left; padding: 0 30px; }
+.publicInterestDetail .con { padding: 50px 0; width: 616px; margin: 0 auto; overflow: hidden; }
+.publicInterestDetail .con img { vertical-align: top; display: block; }

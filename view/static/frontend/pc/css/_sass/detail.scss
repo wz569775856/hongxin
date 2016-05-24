@@ -289,5 +289,40 @@
 }
 
 
+.publicInterestDetail{
+	border: 1px solid #d5d5d5;
+	.pTit{
+		border-bottom: 1px solid #d5d5d5;
+		line-height: 36px;
+		padding: 32px 0;
+		text-align: center;
+		font-size: 22px;
+	}
+	.txt{
+		padding: 30px 20px 30px 70px;
+		border-bottom: 1px solid #d5d5d5;
+		li{
+			float: left;
+			width: 49%;
+			line-height: 42px;
+			height: 42px;
+			overflow: hidden;
+			.mapBtn{
+				float: left;
+				padding:0 30px;
+			}
+		}
+	}
+	.con{
+		padding: 50px 0;
+		width: 616px;
+		margin: 0 auto;
+		overflow: hidden;
+		img{
+			vertical-align: top;
+			display: block;
+		}
+	}
+}
 
 
