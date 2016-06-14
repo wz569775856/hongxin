@@ -1,4 +1,6 @@
 $(function(){
+	var ie6=!-[1,]&&!window.XMLHttpRequest;
+
 	$(".header .headerRight li").hover(
 		function(){
 			$(this).addClass("cur");
@@ -38,5 +40,41 @@ $(function(){
 			})
 		})
 	}
+
+	if($(".global_input input[defaultTxt]").length > 0){
+		$(".global_input input[defaultTxt]").each(function(){
+			$(this).bind("focus",function(){
+				if($(this).val() == $(this).attr("defaultTxt")){
+					$(this).val("");
+					$(this).css({"color":"#333"});
+				}
+			})
+			$(this).bind("blur",function(){
+				if($(this).val() == "" || $(this).val() == $(this).attr("defaultTxt")){
+					$(this).css({"color":"#999"});
+					$(this).val($(this).attr("defaultTxt"));
+				}
+			})
+		})
+	}
+
+	if($(".global_area textarea[defaultTxt]").length > 0){
+		$(".global_area textarea[defaultTxt]").each(function(){
+			$(this).bind("focus",function(){
+				if($(this).val() == $(this).attr("defaultTxt")){
+					$(this).val("");
+					$(this).css({"color":"#333"});
+				}
+			})
+			$(this).bind("blur",function(){
+				if($(this).val() == "" || $(this).val() == $(this).attr("defaultTxt")){
+					$(this).css({"color":"#999"});
+					$(this).val($(this).attr("defaultTxt"));
+				}
+			})
+		})
+	}
+
+
 
 })
